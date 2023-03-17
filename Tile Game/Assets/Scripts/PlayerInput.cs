@@ -5,17 +5,17 @@ using UnityEngine.UI;
 
 public class PlayerInput : MonoBehaviour
 {
-    public Text textCorrectDisplay, playerInputDisplay;
+    public Text textCorrectDisplay, playerInputDisplay, livesDisplay;
     public Button[] inputBtn;
+    public Button[] displayBtn;
     public int lives;
 
     public Color buttonDefaultColor, buttonActiveColor, buttonInactiveColor;
 
     string localInput, localOutput;
-    int[] randomInt = new int[3];
+    public int[] randomInt;
 
-
-    public int turnTime;
+    public int turnLeft;
     private IEnumerator coroutine;
 
     float startIndex = 0;
@@ -24,7 +24,7 @@ public class PlayerInput : MonoBehaviour
 
     void Start()
     {
-        randomNumbers(3);
+        randomNumbers(randomInt.Length);
         getBtns();
     }
 
@@ -45,8 +45,10 @@ public class PlayerInput : MonoBehaviour
             startIndex += 1 * Time.deltaTime;
             
             index = Mathf.RoundToInt(startIndex);
-            StartCoroutine(waiter(randomInt[index], inputBtn));
+            StartCoroutine(waiter(randomInt[index], displayBtn));
         }
+
+        livesDisplay.text = lives.ToString();
 
     }
 
@@ -75,8 +77,6 @@ public class PlayerInput : MonoBehaviour
                     {
                         localInput = playerInput + 1;
                         localOutput = playerOutput.ToString();
-
-
 
                         if (playerInput == playerOutput.ToString())
                         {
