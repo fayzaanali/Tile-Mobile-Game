@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerInput : MonoBehaviour
 {
-    public Text textCorrectDisplay, playerInputDisplay, livesDisplay;
+    public Text textCorrectDisplay, playerInputDisplay;
+    public TextMeshProUGUI livesDisplay;
     public Button[] inputBtn;
     public Button[] displayBtn;
     public int lives;
@@ -16,49 +18,44 @@ public class PlayerInput : MonoBehaviour
     public int[] randomInt;
 
     public int turnLeft;
-    private IEnumerator coroutine;
 
-    float startIndex = 0;
-    float endIndex = 2; // needs to 1 less than randomInt[]
-    int index;
+    float timeBetweenPatterns = 1.5f; // the time between each pattern in seconds
+    int[] pattern; // the pattern to be displayed
 
     void Start()
     {
-        randomNumbers(randomInt.Length);
+        pattern = new int[3]; // set the size of the pattern
+        randomNumbers(pattern.Length);
         getBtns();
+
+        StartCoroutine(PlayPattern(pattern)); // start playing the pattern
     }
 
-
-    IEnumerator waiter(int randomInt, Button[] randomBtn)
+    IEnumerator PlayPattern(int[] pattern)
     {
-            randomBtn[randomInt].GetComponent<Image>().color = buttonActiveColor;
-            yield return new WaitForSeconds(1.5f);
-            randomBtn[randomInt].GetComponent<Image>().color = buttonDefaultColor;
+        foreach (int num in pattern)
+        {
+            yield return new WaitForSeconds(timeBetweenPatterns);
+
+            displayBtn[num].GetComponent<Image>().color = buttonActiveColor;
+            yield return new WaitForSeconds(timeBetweenPatterns);
+            displayBtn[num].GetComponent<Image>().color = buttonDefaultColor;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        if (startIndex < endIndex)
-        {
-            startIndex += 1 * Time.deltaTime;
-            
-            index = Mathf.RoundToInt(startIndex);
-            StartCoroutine(waiter(randomInt[index], displayBtn));
-        }
-
         livesDisplay.text = lives.ToString();
-
     }
 
     void randomNumbers(int amount)
     {
         for (int i = 0; i < amount; i++)
         {
-            int random = Random.Range(1, amount);
+            int random = Random.Range(1, displayBtn.Length); // pick a random button to add to the pattern
             Debug.Log(i + " - Random Ints are: " + random);
-            randomInt[i] = random;
+            pattern[i] = random;
         }
     }
 
@@ -70,7 +67,7 @@ public class PlayerInput : MonoBehaviour
             {
                 btn.GetComponent<Button>().onClick.AddListener(() => {
                     string playerInput = btn.GetComponentInChildren<Text>().text;
-                    //Debug.Log("Player Input: " + playerInput + " /// btn: " + btn);
+                    //Debug.Log("Player Input: " + playerInput + " btn: " + btn);
                     playerInputDisplay.text = playerInput;
 
                     foreach (int playerOutput in randomInt)
@@ -106,4 +103,5 @@ public class PlayerInput : MonoBehaviour
             }
         }
     }
+
 }
