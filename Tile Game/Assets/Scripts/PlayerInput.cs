@@ -11,6 +11,7 @@ public class PlayerInput : MonoBehaviour
     public Button[] inputBtn;
     public Button[] displayBtn;
     public int lives;
+    public GameObject livesPrefab;
 
     public Color buttonDefaultColor, buttonActiveColor, buttonInactiveColor;
 
@@ -19,16 +20,18 @@ public class PlayerInput : MonoBehaviour
 
     public int turnLeft;
 
-    float timeBetweenPatterns = 1.5f; // the time between each pattern in seconds
-    int[] pattern; // the pattern to be displayed
+    float timeBetweenPatterns = 1.5f; 
+    int[] pattern; 
 
     void Start()
     {
-        pattern = new int[3]; // set the size of the pattern
-        randomNumbers(pattern.Length);
+        pattern = new int[3];
+        
         getBtns();
-
-        StartCoroutine(PlayPattern(pattern)); // start playing the pattern
+        randomNumbers(pattern.Length);
+        instantiateLives(3);
+        
+        StartCoroutine(PlayPattern(pattern));
     }
 
     IEnumerator PlayPattern(int[] pattern)
@@ -101,6 +104,14 @@ public class PlayerInput : MonoBehaviour
             {
                 setBtn.gameObject.SetActive(false); // sets all btns inactive is the game is over
             }
+        }
+    }
+
+    void instantiateLives(int lives)
+    {
+        for(int i = 1; i < lives; i++)
+        {
+            Instantiate(livesPrefab, new Vector3(i * 10.0f, 0, 0), Quaternion.identity);
         }
     }
 
