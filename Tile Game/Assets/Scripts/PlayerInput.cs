@@ -15,13 +15,11 @@ public class PlayerInput : MonoBehaviour
 
     public Color buttonDefaultColor, buttonActiveColor, buttonInactiveColor;
 
-    string localInput, localOutput;
-    public int[] randomInt;
-
     public int turnLeft;
 
     float timeBetweenPatterns = 1.5f; 
-    int[] pattern; 
+    int[] pattern;
+    int ptrnIndex = 0;
 
     void Start()
     {
@@ -56,7 +54,7 @@ public class PlayerInput : MonoBehaviour
     {
         for (int i = 0; i < amount; i++)
         {
-            int random = Random.Range(1, displayBtn.Length); // pick a random button to add to the pattern
+            int random = Random.Range(1, displayBtn.Length);
             Debug.Log(i + " - Random Ints are: " + random);
             pattern[i] = random;
         }
@@ -70,39 +68,33 @@ public class PlayerInput : MonoBehaviour
             {
                 btn.GetComponent<Button>().onClick.AddListener(() => {
                     string playerInput = btn.GetComponentInChildren<Text>().text;
-                    //Debug.Log("Player Input: " + playerInput + " btn: " + btn);
                     playerInputDisplay.text = playerInput;
 
-                    foreach (int playerOutput in randomInt)
+                    Debug.Log("input " + playerInput);
+                    Debug.Log("pattern " + pattern[ptrnIndex]);
+                    if (playerInput == pattern[ptrnIndex].ToString())
                     {
-                        localInput = playerInput + 1;
-                        localOutput = playerOutput.ToString();
+                        Debug.Log("input matched pattern " + pattern[ptrnIndex].ToString() + " lives left: " + lives + " index at: " + ptrnIndex);
+                        // add score here later
+                        ptrnIndex++;
+                        textCorrectDisplay.text = "correct";
+                    } else if (playerInput != pattern[ptrnIndex].ToString())
+                    {
+                        lives = lives - 1;
+                        Debug.Log("input did not match pattern " + pattern[ptrnIndex].ToString() + "lives left: " + lives + " index at: " + ptrnIndex);
+                        textCorrectDisplay.text = "incorrect";
+                    }
 
-                        if (playerInput == playerOutput.ToString())
+                    if (lives == 0)
+                    {
+                        Debug.Log("game over!");
+                        textCorrectDisplay.text = "game over";
+                        foreach (Button setBtn in inputBtn)
                         {
-                            textCorrectDisplay.text = playerInput + " == " + playerOutput.ToString();
+                            setBtn.gameObject.SetActive(false);
                         }
                     }
-                    checkLives(playerInput);
                 });
-            }
-        }
-    }
-
-    void checkLives(string playerInput)
-    {
-        if (playerInput != localOutput)
-        {
-            lives = lives - 1;
-        }
-
-        if (lives == 0)
-        {
-            Debug.Log("game over!");
-            textCorrectDisplay.text = "game over";
-            foreach (Button setBtn in inputBtn)
-            {
-                setBtn.gameObject.SetActive(false); // sets all btns inactive is the game is over
             }
         }
     }
