@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerSettings : MonoBehaviour
 {
     [Header("Menu and Interactables")]
     public Canvas ingameSettingsCanvas;
-    public Button openSettingsMenu, closeSettingsMenu;
+    public Button openSettingsMenu, closeSettingsMenu, exitToMainMenu;
     
     [Header("Audio Settings")]
     public Slider audioSlider;
@@ -41,6 +42,12 @@ public class PlayerSettings : MonoBehaviour
         {
             ingameSettingsCanvas.gameObject.SetActive(false);
             Debug.Log("close settings");
+        });
+
+        exitToMainMenu.GetComponent<Button>().onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene(0);
+            Debug.Log("exit to main menu");
         });
     }
 }

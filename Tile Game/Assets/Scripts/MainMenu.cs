@@ -5,13 +5,15 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    public Button playBtn, levelSelectBtn, settingBtn, returnBtn;
+    public Button playBtn, levelSelectBtn, settingBtn;
     public Canvas playCanvas, levelCanvas, settingCanvas;
+    public Button[] exitButtonArray;
     // Start is called before the first frame update
     void Start()
     {
         setDefaultCanvas();
         btnListen();
+        exitToMainMenu();
     }
 
     // Update is called once per frame
@@ -53,5 +55,17 @@ public class MainMenu : MonoBehaviour
             levelCanvas.gameObject.SetActive(false);
             playCanvas.gameObject.SetActive(false);
         });
+    }
+
+    void exitToMainMenu()
+    {
+        foreach (Button btn in exitButtonArray)
+        {
+            btn.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                Debug.Log("exiting");
+                setDefaultCanvas();
+            });
+        }
     }
 }
